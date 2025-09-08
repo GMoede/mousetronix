@@ -5,18 +5,31 @@
 //  Version : 1.0
 //  Notes   : Prototyping LED circuit for shadowbox
 //****************************************************************
+// #define planeHit0 A0
+// #define planeHit1 A1
+// #define planeHit2 A2
+// #define planeHit3 A3
+// #define planeHit4 A4
+// #define planeHit5 A5
+// #define planeHit6 A6
+// #define planeHit7 A7
+
+static const int planeHits[] = {A0, A1, A2, A3, A4, A5, 11, 12};
+
 static const int planeLightPatternsLength = 6;
 
 static int maxBrightness = 255;
 static int minBrightness = 0;
 
-static int hangGliderPin = 3;
-static int mouseBodyPin = 5;
-static int planeLLPin = 4;
-static int planeLRPin = 7;
-static int planeRLPin = 8;
-static int planeRRPin = 10;
-static int heliEyesPin = 9;
+//PIN DEFINITIONS
+static const int hangGliderPin = 3;
+static const int mouseBodyPin = 5;
+static const int planeLLPin = 4;
+static const int planeLRPin = 7;
+static const int planeRLPin = 8;
+static const int planeRRPin = 10;
+static const int heliEyesPin = 9;
+
 
 int hangGliderBrightness = 51;
 int hangGliderFadeAmount = 4;
@@ -55,6 +68,10 @@ void setup() {
   pinMode(planeRLPin, OUTPUT);
   pinMode(planeRRPin, OUTPUT);
   pinMode(heliEyesPin, OUTPUT);
+
+  for(int i = 0; i < 8; i++){
+    pinMode(planeHits[i], OUTPUT);
+  }
 }
 
 void loop() {
@@ -68,7 +85,7 @@ void loop() {
   fade(heliEyesPin, heliEyesFadeAmount, heliEyesBrightness);
   shootPlaneGuns();
 
-  delay(50);
+  delay(40);
 }
 
 void shootPlaneGuns() {
@@ -82,13 +99,13 @@ void shootPlaneGuns() {
   writePlaneLights(planeLightPatternInteger);
   planeLightStep++;
 
-    if(shouldChooseNextPlaneLightPhase){
-    shouldChooseNextPlaneLightPhase = false;
-    int randomNumber = random(0, planeLightPatternsLength);
-    Serial.println(randomNumber);
-    planeLightPattern =  randomNumber;
-    planeLightStep = 0;
-  }
+  // if(shouldChooseNextPlaneLightPhase){
+  //   shouldChooseNextPlaneLightPhase = false;
+  //   int randomNumber = random(0, planeLightPatternsLength);
+  //   Serial.println(randomNumber);
+  //   planeLightPattern =  randomNumber;
+  //   planeLightStep = 0;
+  // }
 }
 
 void writePlaneLights(int planeLightPatternInteger){
@@ -96,6 +113,14 @@ void writePlaneLights(int planeLightPatternInteger){
     digitalWrite(planeLRPin, planeLightPatternInteger & 0b0100);
     digitalWrite(planeRLPin, planeLightPatternInteger & 0b0010);
     digitalWrite(planeRRPin, planeLightPatternInteger & 0b0001);
+      for(int i = 0; i < 8; i++){
+        if(planeLightPatternInteger!= 0 && i == planeLightStep){
+          digitalWrite(planeHits[i], HIGH);
+        } else {
+          digitalWrite(planeHits[i], LOW);
+        }
+      }
+    
 }
 
 // the loop routine runs over and over again forever:
