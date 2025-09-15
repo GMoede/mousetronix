@@ -85,7 +85,7 @@ void loop() {
   fade(heliEyesPin, heliEyesFadeAmount, heliEyesBrightness);
   shootPlaneGuns();
 
-  delay(40);
+  delay(75);
 }
 
 void shootPlaneGuns() {
